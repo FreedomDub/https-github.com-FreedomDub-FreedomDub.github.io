@@ -1,0 +1,42 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@freedomdub.com",
+      "password": "22102020Freedom",
+      "role": "admin",
+      "name": "Главный Администратор"
+    }
+  ],
+  "teamMembers": [
+    {
+      "id": 1,
+      "name": "Алексей Петров",
+      "role": "Актёр озвучки",
+      "projects": ["Проект 1"]
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "title": "Проект 1",
+      "description": "Описание проекта 1",
+      "episodes": [],
+      "status": "в работе",
+      "created": "2023-10-20",
+      "updated": "2023-10-20"
+    }
+  ],
+  "pendingVacancies": [],
+  "chatHistory": [
+    {
+      "text": "Добро пожаловать в FreedomDub Studio! Чем могу помочь?",
+      "sender": "bot",
+      "isMedia": false,
+      "mediaType": null,
+      "mediaUrl": null,
+      "timestamp": "2023-10-20T12:00:00.000Z"
+    }
+  ],
+  "lastUpdate": 1697803200000
+}
