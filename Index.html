@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreedomDub - Система управления проектами и чат-бот</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="notification" class="notification"></div>
+    
+    <header>
+        <div class="logo">FreedomDub</div>
+        <div id="user-menu">
+            <button id="auth-btn" class="btn btn-secondary">Вход / Регистрация</button>
+        </div>
+    </header>
+    
+    <div class="container">
+        <h1>Проекты</h1>
+        
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <h3>Админ-панель</h3>
+            <button class="btn" onclick="logoutAdmin()">Выйти</button>
+            <button class="btn" onclick="saveToGitHub()" style="background: #24292e; color: white;">Сохранить на GitHub</button>
+            <div id="githubStatus"></div>
+        </div>
+        
+        <div class="login-form" id="loginForm">
+            <h3>Вход для администратора</h3>
+            <input type="password" id="adminPassword" placeholder="Пароль администратора">
+            <button class="btn" onclick="loginAsAdmin()">Войти</button>
+        </div>
+        
+        <button id="add-project-btn" class="btn btn-admin" style="display: none;">Добавить проект</button>
+        <button id="manage-team-btn" class="btn btn-admin" style="display: none; margin-left: 0.5rem;">Управление командой</button>
+        <button id="sync-data-btn" class="btn" style="margin-left: 0.5rem;">Синхронизировать данные</button>
+        
+        <div class="projects-grid" id="projects-container">
+            <!-- Проекты будут загружаться здесь -->
+        </div>
+        
+        <div class="team-section">
+            <h2>Наша команда</h2>
+            <div class="team-grid" id="team-container">
+                <!-- Команда будет загружаться здесь -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Чат-бот -->
+    <div class="chat-toggle" id="chat-toggle">
+        <i class="fas fa-comment-dots"></i>
+    </div>
+    
+    <div class="chat-container" id="chat-container">
+        <div class="chat-header" id="chat-header">
+            <h3>FreedomDub Чат-бот</h3>
+            <i class="fas fa-times" id="close-chat"></i>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                Добро пожаловать в FreedomDub Studio! Чем могу помочь?
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Введите ваше сообщение..." autocomplete="off">
+            <button id="send-btn">Отправить</button>
+            <label for="file-upload" class="file-label">
+                <i class="fas fa-paperclip"></i>
+            </label>
+            <input type="file" id="file-upload" class="file-input" accept="image/*,video/*,audio/*">
+        </div>
+        
+        <div class="vacancy-form" id="vacancy-form">
+            <h3>Заявка на вакансию</h3>
+            <input type="text" id="vacancy-name" placeholder="Ваше имя" required>
+            <input type="text" id="vacancy-role" placeholder="На какую роль?" required>
+            <textarea id="vacancy-message" placeholder="Расскажите о себе" rows="4" required></textarea>
+            <button id="submit-vacancy">Отправить заявку</button>
+        </div>
+    </div>
+    
+    <!-- Модальные окна -->
+    <div class="modal" id="project-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-project-title">Новый проект</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="project-modal-content">
+                <!-- Контент будет загружаться здесь -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="team-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Управление командой</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="team-modal-content">
+                <!-- Контент будет загружаться здесь -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Авторизация</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">Вход</div>
+                <div class="auth-tab" data-tab="register">Регистрация</div>
+            </div>
+            
+            <div class="auth-content active" id="login-content">
+                <form id="login-form">
+                    <div style="margin-bottom: 1rem;">
+                        <label for="login-email" style="display: block; margin-bottom: 0.5rem;">Email</label>
+                        <input type="email" id="login-email" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="login-password" style="display: block; margin-bottom: 0.5rem;">Пароль</label>
+                        <input type="password" id="login-password" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <button type="submit" class="btn">Войти</button>
+                </form>
+            </div>
+            
+            <div class="auth-content" id="register-content">
+                <form id="register-form">
+                    <div style="margin-bottom: 1rem;">
+                        <label for="register-name" style="display: block; margin-bottom: 0.5rem;">Имя</label>
+                        <input type="text" id="register-name" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label for="register-email" style="display: block; margin-bottom: 0.5rem;">Email</label>
+                        <input type="email" id="register-email" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="register-password" style="display: block; margin-bottom: 0.5rem;">Пароль (минимум 6 символов)</label>
+                        <input type="password" id="register-password" minlength="6" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <button type="submit" class="btn">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        &copy; <span id="current-year"></span> FreedomDub Studio. Все права защищены.
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
